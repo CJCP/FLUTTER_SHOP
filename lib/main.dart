@@ -67,6 +67,7 @@ class Clothe {
   final String name;
   final String title;
   final String category;
+  final List<String> features;
   final String description;
   final String image;
   final String largeImage;
@@ -74,14 +75,15 @@ class Clothe {
   final num price;
 
   Clothe(this.name, this.title, this.category, this.description, this.image,
-      this.largeImage, this.price);
+      this.largeImage, this.price, this.features);
 
   Clothe.fromJSON(Map<String, dynamic> json)
       : name = json['name'],
         title = json['title'],
         category = json['category'],
-        description = json['description'],
+        description = json['computedDescription'],
         image = json['image'],
+        features = List<String>.from(json['features']),
         largeImage = json['largeImage'],
         price = json['price'];
 }
@@ -115,12 +117,219 @@ class MyApp extends StatelessWidget {
   }
 }
 
-abstract class Categories {
-  static String ladiesOuterwear = 'ladies_outerwear';
-  static String mensOuterwar = 'mens_outerwear';
+class ClotheDetails extends StatelessWidget {
+  final Clothe clothe;
 
-  static String ladiesTshirt = 'ladies_tshirt';
-  static String mensTshirt = 'mens_tshirt';
+  ClotheDetails(this.clothe);
+
+  @override
+  Widget build(BuildContext context) {
+    final sizes = ['XS', 'S', 'M', 'L', 'XL'];
+    final quantities = [1, 2, 3, 4, 5];
+    final features = clothe.features
+        .map((f) => Text(
+              '- $f',
+              style: TextStyle(
+                color: Color.fromRGBO(117, 117, 117, 1),
+              ),
+            ))
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add_shopping_cart),
+            color: Colors.black,
+            onPressed: () => print('add_shopping_cart'),
+          )
+        ],
+        title: Text(
+          'S H O P',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      body: Container(
+        margin: EdgeInsets.only(left: 30, right: 30),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Hero(
+                tag: clothe.image,
+                child: Image.asset(
+                  clothe.image,
+                ),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                  child: Text(
+                    '${clothe.title}',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                  child: Text(
+                    '\$${clothe.price}',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color.fromRGBO(117, 117, 117, 1),
+                    ),
+                  ),
+                ),
+                Divider(
+                  indent: 1,
+                  color: Colors.grey[900],
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      child: Text(
+                        'Size',
+                        style: TextStyle(
+                          color: Color.fromRGBO(117, 117, 117, 1),
+                        ),
+                      ),
+                      width: 80,
+                    ),
+                    Expanded(
+                      child: DropdownButton(
+                        items: sizes.map((v) {
+                          return DropdownMenuItem(
+                            child: Text(v),
+                          );
+                        }).toList(),
+                        isExpanded: true,
+                        onChanged: (e) {
+                          print('hello');
+                        },
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      child: Text(
+                        'Quantity',
+                        style: TextStyle(
+                          color: Color.fromRGBO(117, 117, 117, 1),
+                        ),
+                      ),
+                      width: 80,
+                    ),
+                    Expanded(
+                      child: DropdownButton(
+                        items: quantities.map((v) {
+                          return DropdownMenuItem(
+                            child: Text(v.toString()),
+                          );
+                        }).toList(),
+                        isExpanded: true,
+                        onChanged: (e) {
+                          print('hello');
+                        },
+                      ),
+                    )
+                  ],
+                ),
+                ViewState(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(bottom: 10, top: 20),
+                        child: Text(
+                          'Description : ',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${clothe.description}',
+                        style: TextStyle(
+                          color: Color.fromRGBO(117, 117, 117, 1),
+                        ),
+                      ),
+                    ],
+                  ),
+                  data: clothe.description,
+                ),
+                ViewState(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 15, bottom: 15),
+                        child: Text(
+                          'Features : ',
+                          style: TextStyle(
+                            color: Color.fromRGBO(117, 117, 117, 1),
+                          ),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: features,
+                      ),
+                    ],
+                  ),
+                  data: clothe.features,
+                ),
+                Container(
+                  height: 50,
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(23, 44, 80, 1),
+          ),
+          child: Center(
+            child: Text(
+              'ADD TO CART',
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ViewState extends StatelessWidget {
+  final Widget child;
+  final dynamic data;
+
+  ViewState({this.child, this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    if (data.length == 0) {
+      return Container();
+    }
+    return child;
+  }
 }
 
 class CategoryData extends StatelessWidget {
@@ -139,9 +348,22 @@ class CategoryData extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset(
-              c.image,
-              height: 200,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClotheDetails(c),
+                  ),
+                );
+              },
+              child: Hero(
+                tag: c.image,
+                child: Image.asset(
+                  c.image,
+                  height: 200,
+                ),
+              ),
             ),
             Text(
               '${c.title}',
@@ -211,7 +433,7 @@ class CategoryData extends StatelessWidget {
                 children: clothesList,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
