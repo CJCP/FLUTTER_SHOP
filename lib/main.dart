@@ -1,43 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_redux/flutter_redux.dart';
 
-class ShopCategories {
-  final List<Clothe> mensOuterwear;
-  final List<Clothe> ladiesOuterwear;
+import 'package:redux/redux.dart';
 
-  final List<Clothe> mensTshirts;
-  final List<Clothe> ladiesTshirts;
-
-  ShopCategories({
-    this.mensOuterwear,
-    this.ladiesOuterwear,
-    this.mensTshirts,
-    this.ladiesTshirts,
-  });
-}
-
-class AppState {
-  final ShopCategories categories;
-
-  AppState(this.categories);
-
-  factory AppState.initial(ShopCategories categories) {
-    return AppState(categories);
-  }
-}
+import 'redux/middleware.dart';
+import 'redux/actions.dart';
+import 'redux/models.dart';
+import 'redux/reducer.dart';
+import 'redux/store.dart';
 
 Future<List<Clothe>> loadJSON(String path) async {
   var data = await rootBundle.loadString(path);
   var decodedJSON = jsonDecode(data);
   return decodedJSON.map<Clothe>((clothe) => Clothe.fromJSON(clothe)).toList();
-}
-
-AppState reducer(AppState app, dynamic action) {
-  return app;
 }
 
 void main() async {
@@ -47,7 +25,8 @@ void main() async {
   List<Clothe> mensTshirts = await loadJSON('data/mens_tshirts.json');
 
   final store = Store<AppState>(
-    reducer,
+    appReducer,
+    middleware: [ShopMiddleware()],
     initialState: AppState.initial(
       ShopCategories(
         ladiesOuterwear: ladiesOuterwear,
@@ -61,31 +40,6 @@ void main() async {
   runApp(
     MyApp(store),
   );
-}
-
-class Clothe {
-  final String name;
-  final String title;
-  final String category;
-  final List<String> features;
-  final String description;
-  final String image;
-  final String largeImage;
-
-  final num price;
-
-  Clothe(this.name, this.title, this.category, this.description, this.image,
-      this.largeImage, this.price, this.features);
-
-  Clothe.fromJSON(Map<String, dynamic> json)
-      : name = json['name'],
-        title = json['title'],
-        category = json['category'],
-        description = json['computedDescription'],
-        image = json['image'],
-        features = List<String>.from(json['features']),
-        largeImage = json['largeImage'],
-        price = json['price'];
 }
 
 class MyApp extends StatelessWidget {
@@ -117,16 +71,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ClotheDetails extends StatelessWidget {
+class ClotheDetails extends StatefulWidget {
   final Clothe clothe;
 
   ClotheDetails(this.clothe);
 
   @override
+  ClotheDetailsState createState() {
+    return new ClotheDetailsState();
+  }
+}
+
+class ClotheDetailsState extends State<ClotheDetails> {
+  String _size = 'M';
+  int _quantity = 1;
+
+  void _updateSize(String size) {
+    print('$size');
+    setState(() {
+      _size = size;
+    });
+  }
+
+  void _updateQuantity(int quantity) {
+    setState(() {
+      _quantity = quantity;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final sizes = ['XS', 'S', 'M', 'L', 'XL'];
     final quantities = [1, 2, 3, 4, 5];
-    final features = clothe.features
+    final features = widget.clothe.features
         .map((f) => Text(
               '- $f',
               style: TextStyle(
@@ -159,11 +136,14 @@ class ClotheDetails extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             Container(
+              height: 10,
+            ),
+            Container(
               alignment: Alignment.center,
               child: Hero(
-                tag: clothe.image,
+                tag: widget.clothe.image,
                 child: Image.asset(
-                  clothe.image,
+                  widget.clothe.image,
                 ),
               ),
             ),
@@ -173,7 +153,7 @@ class ClotheDetails extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 10, bottom: 10),
                   child: Text(
-                    '${clothe.title}',
+                    '${widget.clothe.title}',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -183,7 +163,7 @@ class ClotheDetails extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 10, bottom: 10),
                   child: Text(
-                    '\$${clothe.price}',
+                    '\$${widget.clothe.price}',
                     style: TextStyle(
                       fontSize: 15,
                       color: Color.fromRGBO(117, 117, 117, 1),
@@ -207,16 +187,17 @@ class ClotheDetails extends StatelessWidget {
                     ),
                     Expanded(
                       child: DropdownButton(
-                        items: sizes.map((v) {
-                          return DropdownMenuItem(
-                            child: Text(v),
-                          );
-                        }).toList(),
-                        isExpanded: true,
-                        onChanged: (e) {
-                          print('hello');
-                        },
-                      ),
+                          items: sizes.map((v) {
+                            return DropdownMenuItem(
+                              child: Text(v),
+                              value: v,
+                            );
+                          }).toList(),
+                          isExpanded: true,
+                          onChanged: (e) {
+                            _updateSize(e);
+                          },
+                          value: _size),
                     )
                   ],
                 ),
@@ -233,16 +214,17 @@ class ClotheDetails extends StatelessWidget {
                     ),
                     Expanded(
                       child: DropdownButton(
-                        items: quantities.map((v) {
-                          return DropdownMenuItem(
-                            child: Text(v.toString()),
-                          );
-                        }).toList(),
-                        isExpanded: true,
-                        onChanged: (e) {
-                          print('hello');
-                        },
-                      ),
+                          items: quantities.map((v) {
+                            return DropdownMenuItem(
+                              child: Text(v.toString()),
+                              value: v,
+                            );
+                          }).toList(),
+                          isExpanded: true,
+                          onChanged: (e) {
+                            _updateQuantity(e);
+                          },
+                          value: _quantity),
                     )
                   ],
                 ),
@@ -261,14 +243,14 @@ class ClotheDetails extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${clothe.description}',
+                        '${widget.clothe.description}',
                         style: TextStyle(
                           color: Color.fromRGBO(117, 117, 117, 1),
                         ),
                       ),
                     ],
                   ),
-                  data: clothe.description,
+                  data: widget.clothe.description,
                 ),
                 ViewState(
                   child: Column(
@@ -289,7 +271,7 @@ class ClotheDetails extends StatelessWidget {
                       ),
                     ],
                   ),
-                  data: clothe.features,
+                  data: widget.clothe.features,
                 ),
                 Container(
                   height: 50,
@@ -305,17 +287,30 @@ class ClotheDetails extends StatelessWidget {
           decoration: BoxDecoration(
             color: Color.fromRGBO(23, 44, 80, 1),
           ),
-          child: Center(
+          child: Center(child: addToShop(widget.clothe, _size, _quantity)),
+        ),
+      ),
+    );
+  }
+
+  Widget addToShop(Clothe clothe, String size, num quantity) {
+    return StoreConnector<AppState, AddItemActionFunction>(
+      converter: (store) => (item) => store.dispatch(AddItemAction(item)),
+      builder: (context, callback) => InkWell(
+            splashColor: Colors.transparent,
+            onTap: () {
+              callback(CartItem(clothe.title, size, quantity, clothe.price));
+            },
             child: Text(
               'ADD TO CART',
               style: TextStyle(color: Colors.white, fontSize: 15),
             ),
           ),
-        ),
-      ),
     );
   }
 }
+
+typedef AddItemActionFunction = Function(CartItem);
 
 class ViewState extends StatelessWidget {
   final Widget child;
