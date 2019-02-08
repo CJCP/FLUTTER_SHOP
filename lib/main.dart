@@ -121,7 +121,7 @@ class ClotheDetailsState extends State<ClotheDetails> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add_shopping_cart),
+            icon: Icon(Icons.shopping_cart),
             color: Colors.black,
             onPressed: () => Navigator.push(
                   context,
@@ -396,7 +396,7 @@ class CategoryData extends StatelessWidget {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add_shopping_cart),
+            icon: Icon(Icons.shopping_cart),
             color: Colors.black,
             onPressed: () => Navigator.push(
                   context,
@@ -462,7 +462,7 @@ class HomePage extends StatelessWidget {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add_shopping_cart),
+            icon: Icon(Icons.shopping_cart),
             color: Colors.black,
             onPressed: () => Navigator.push(
                   context,

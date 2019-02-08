@@ -20,9 +20,9 @@ class CartContainer extends StatelessWidget {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add_shopping_cart),
+            icon: Icon(Icons.shopping_cart),
             color: Colors.black,
-            onPressed: () => print('add_shopping_cart'),
+            onPressed: () => print('shopping_cart'),
           )
         ],
         title: Text(
@@ -31,26 +31,7 @@ class CartContainer extends StatelessWidget {
         ),
       ),
       body: Container(
-        margin: EdgeInsets.only(left: 30, right: 30),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 20, bottom: 10),
-              child: Center(
-                child: Text(
-                  'Your Cart',
-                  style: TextStyle(fontSize: 17),
-                ),
-              ),
-            ),
-            countItems(),
-            CartList(),
-            Container(
-              height: 50,
-            )
-          ],
-        ),
-      ),
+          margin: EdgeInsets.only(left: 30, right: 30), child: viewCart()),
       bottomNavigationBar: BottomAppBar(
         child: Container(
           height: 50,
@@ -65,18 +46,98 @@ class CartContainer extends StatelessWidget {
     );
   }
 
+  Widget viewCart() {
+    return StoreConnector<AppState, num>(
+      converter: (store) => store.state.cartItems.length,
+      builder: (context, count) => count > 0
+          ? ListView(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 10),
+                  child: Center(
+                    child: Text(
+                      'Your Cart',
+                      style: TextStyle(fontSize: 17),
+                    ),
+                  ),
+                ),
+                countItems(),
+                CartList(),
+                Container(
+                  child: cartTotal(),
+                ),
+                Container(
+                  height: 50,
+                )
+              ],
+            )
+          : Container(
+              padding: EdgeInsets.only(top: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Your ',
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  Icon(Icons.shopping_cart),
+                  Text(
+                    ' is empty.',
+                    style: TextStyle(fontSize: 17),
+                  )
+                ],
+              ),
+            ),
+    );
+  }
+
   Widget countItems() {
     return StoreConnector<AppState, num>(
       converter: (store) => store.state.cartItems.length,
-      builder: (context, count) => Container(
-            margin: EdgeInsets.only(bottom: 20),
-            child: Center(
-              child: Text(
-                '($count items)',
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.grey,
-                ),
+      builder: (context, count) {
+        String item = count > 1 ? 'items' : 'item';
+        return Container(
+          margin: EdgeInsets.only(bottom: 20),
+          child: Center(
+            child: Text(
+              '($count $item)',
+              style: TextStyle(
+                fontSize: 17,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget cartTotal() {
+    return StoreConnector<AppState, num>(
+      converter: (store) => store.state.cartItems
+          .fold<num>(0, (acc, item) => acc + (item.price * item.quantity)),
+      builder: (context, total) => Container(
+            margin: EdgeInsets.only(right: 5, top: 30),
+            child: Container(
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Total : ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 30),
+                    child: Text(
+                      '\$${total.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+                mainAxisAlignment: MainAxisAlignment.end,
               ),
             ),
           ),
