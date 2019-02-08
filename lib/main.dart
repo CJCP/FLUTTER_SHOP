@@ -6,6 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:redux/redux.dart';
 
+import 'ui/cart_flutter.dart';
 import 'redux/middleware.dart';
 import 'redux/actions.dart';
 import 'redux/models.dart';
@@ -87,7 +88,6 @@ class ClotheDetailsState extends State<ClotheDetails> {
   int _quantity = 1;
 
   void _updateSize(String size) {
-    print('$size');
     setState(() {
       _size = size;
     });
@@ -123,7 +123,12 @@ class ClotheDetailsState extends State<ClotheDetails> {
           IconButton(
             icon: Icon(Icons.add_shopping_cart),
             color: Colors.black,
-            onPressed: () => print('add_shopping_cart'),
+            onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartContainer(),
+                  ),
+                ),
           )
         ],
         title: Text(
@@ -299,7 +304,8 @@ class ClotheDetailsState extends State<ClotheDetails> {
       builder: (context, callback) => InkWell(
             splashColor: Colors.transparent,
             onTap: () {
-              callback(CartItem(clothe.title, size, quantity, clothe.price));
+              callback(CartItem(
+                  clothe.title, size, quantity, clothe.price, clothe.image));
             },
             child: Text(
               'ADD TO CART',
@@ -392,7 +398,12 @@ class CategoryData extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add_shopping_cart),
             color: Colors.black,
-            onPressed: () => print('add_shopping_cart'),
+            onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartContainer(),
+                  ),
+                ),
           )
         ],
         title: Text(
@@ -453,7 +464,12 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add_shopping_cart),
             color: Colors.black,
-            onPressed: () => print('add_shopping_cart'),
+            onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartContainer(),
+                  ),
+                ),
           )
         ],
         title: Text(

@@ -16,10 +16,11 @@ class ShopCategories {
 class CartItem {
   final String label;
   final String size;
+  final String image;
   final int quantity;
   final num price;
 
-  CartItem(this.label, this.size, this.quantity, this.price);
+  CartItem(this.label, this.size, this.quantity, this.price, this.image);
 }
 
 class Clothe {
