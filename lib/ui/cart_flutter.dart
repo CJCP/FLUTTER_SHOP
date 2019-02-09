@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:shop/redux/actions.dart';
 import 'package:shop/redux/models.dart';
 import 'package:shop/redux/store.dart';
+import 'package:shop/ui/cart_badge.dart';
 
 class CartContainer extends StatelessWidget {
   @override
@@ -19,10 +20,8 @@ class CartContainer extends StatelessWidget {
         ),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            color: Colors.black,
-            onPressed: () => print('shopping_cart'),
+          CartBadge(
+            closeRouting: true,
           )
         ],
         title: Text(

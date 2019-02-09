@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:redux/redux.dart';
+import 'package:shop/ui/cart_badge.dart';
 
 import 'ui/cart_flutter.dart';
 import 'redux/middleware.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
+        debugShowCheckedModeBanner : false,
         title: 'Flutter Demo',
         theme: ThemeData(
           // This is the theme of your application.
@@ -120,16 +122,7 @@ class ClotheDetailsState extends State<ClotheDetails> {
         ),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            color: Colors.black,
-            onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CartContainer(),
-                  ),
-                ),
-          )
+          CartBadge()
         ],
         title: Text(
           'S H O P',
@@ -395,16 +388,7 @@ class CategoryData extends StatelessWidget {
           onPressed: () {},
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            color: Colors.black,
-            onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CartContainer(),
-                  ),
-                ),
-          )
+          CartBadge()
         ],
         title: Text(
           'S H O P',
@@ -461,16 +445,7 @@ class HomePage extends StatelessWidget {
           onPressed: () => print('menu'),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            color: Colors.black,
-            onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CartContainer(),
-                  ),
-                ),
-          )
+          CartBadge()
         ],
         title: Text(
           'S H O P',
