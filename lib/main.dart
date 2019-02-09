@@ -62,22 +62,14 @@ class MyApp extends StatelessWidget {
         ),
         home: HomePage(),
         routes: {
-          Routes.mensOuterwears : (context) => CategoryData(
-            'Men\'s Outerwear',
-            store.state.categories.mensOuterwear
-          ),
-          Routes.ladiesOuterwears : (context) => CategoryData(
-            'Ladies Outerwear',
-            store.state.categories.ladiesOuterwear
-          ),
-          Routes.mensTshirts : (context) => CategoryData(
-            'Men\'s T-Shirts',
-            store.state.categories.mensTshirts
-          ),
-          Routes.ladiesTshirts : (context) => CategoryData(
-            'Ladies T-Shirts',
-            store.state.categories.ladiesTshirts
-          ),
+          Routes.mensOuterwears: (context) => CategoryData(
+              'Men\'s Outerwear', store.state.categories.mensOuterwear),
+          Routes.ladiesOuterwears: (context) => CategoryData(
+              'Ladies Outerwear', store.state.categories.ladiesOuterwear),
+          Routes.mensTshirts: (context) => CategoryData(
+              'Men\'s T-Shirts', store.state.categories.mensTshirts),
+          Routes.ladiesTshirts: (context) => CategoryData(
+              'Ladies T-Shirts', store.state.categories.ladiesTshirts),
         },
       ),
     );
@@ -583,20 +575,17 @@ class ShopNowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Ink(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 2),
-        ),
-        child: InkWell(
-          // splashColor: Colors.transparent,
-          onTap: () => onPress(),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 8, 20, 8),
-            child: Text(
-              'SHOP NOW',
-              style: TextStyle(fontSize: 15),
-            ),
+    return Ink(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      child: InkWell(
+        onTap: () => onPress(),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20, 8, 20, 8),
+          child: Text(
+            'SHOP NOW',
+            style: TextStyle(fontSize: 15),
           ),
         ),
       ),
