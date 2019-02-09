@@ -5,9 +5,10 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:redux/redux.dart';
+import 'package:shop/routes.dart';
 import 'package:shop/ui/cart_badge.dart';
+import 'package:shop/ui/drawer.dart';
 
-import 'ui/cart_flutter.dart';
 import 'redux/middleware.dart';
 import 'redux/actions.dart';
 import 'redux/models.dart';
@@ -54,21 +55,30 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
-        debugShowCheckedModeBanner : false,
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
         home: HomePage(),
+        routes: {
+          Routes.mensOuterwears : (context) => CategoryData(
+            'Men\'s Outerwear',
+            store.state.categories.mensOuterwear
+          ),
+          Routes.ladiesOuterwears : (context) => CategoryData(
+            'Ladies Outerwear',
+            store.state.categories.ladiesOuterwear
+          ),
+          Routes.mensTshirts : (context) => CategoryData(
+            'Men\'s T-Shirts',
+            store.state.categories.mensTshirts
+          ),
+          Routes.ladiesTshirts : (context) => CategoryData(
+            'Ladies T-Shirts',
+            store.state.categories.ladiesTshirts
+          ),
+        },
       ),
     );
   }
@@ -121,9 +131,7 @@ class ClotheDetailsState extends State<ClotheDetails> {
           color: Colors.black, //change your color here
         ),
         centerTitle: true,
-        actions: <Widget>[
-          CartBadge()
-        ],
+        actions: <Widget>[CartBadge()],
         title: Text(
           'S H O P',
           style: TextStyle(color: Colors.black),
@@ -377,19 +385,12 @@ class CategoryData extends StatelessWidget {
     }).toList();
 
     return Scaffold(
+      drawer: SDrawer(),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
-          onPressed: () {},
-        ),
-        actions: <Widget>[
-          CartBadge()
-        ],
+        actions: <Widget>[CartBadge()],
         title: Text(
           'S H O P',
           style: TextStyle(color: Colors.black),
@@ -434,19 +435,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SDrawer(),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
-          onPressed: () => print('menu'),
-        ),
-        actions: <Widget>[
-          CartBadge()
-        ],
+        actions: <Widget>[CartBadge()],
         title: Text(
           'S H O P',
           style: TextStyle(color: Colors.black),
@@ -462,15 +456,7 @@ class HomePage extends StatelessWidget {
                   path: 'images/mens_outerwear.jpg',
                   title: 'Men\'s Outerwear',
                   onPress: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CategoryData(
-                              'Men\'s Outerwear',
-                              categories.mensOuterwear,
-                            ),
-                      ),
-                    );
+                    Navigator.pushNamed(context, Routes.mensOuterwears);
                   },
                 );
               },
@@ -482,15 +468,7 @@ class HomePage extends StatelessWidget {
                   path: 'images/ladies_outerwear.jpg',
                   title: 'Ladies Outerwear',
                   onPress: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CategoryData(
-                              'Ladies Outerwear',
-                              categories.ladiesOuterwear,
-                            ),
-                      ),
-                    );
+                    Navigator.pushNamed(context, Routes.ladiesOuterwears);
                   },
                 );
               },
@@ -504,15 +482,7 @@ class HomePage extends StatelessWidget {
                           path: 'images/mens_tshirts.jpg',
                           title: 'Men\'s T-Shirts',
                           onPress: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CategoryData(
-                                      'Men\'s T-Shirts',
-                                      categories.mensTshirts,
-                                    ),
-                              ),
-                            );
+                            Navigator.pushNamed(context, Routes.mensTshirts);
                           },
                         ),
                   ),
@@ -524,15 +494,7 @@ class HomePage extends StatelessWidget {
                           path: 'images/ladies_tshirts.jpg',
                           title: 'Ladies T-Shirts',
                           onPress: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CategoryData(
-                                      'Ladies T-Shirts',
-                                      categories.ladiesTshirts,
-                                    ),
-                              ),
-                            );
+                            Navigator.pushNamed(context, Routes.ladiesTshirts);
                           },
                         ),
                   ),
@@ -627,7 +589,7 @@ class ShopNowButton extends StatelessWidget {
           border: Border.all(color: Colors.black, width: 2),
         ),
         child: InkWell(
-          splashColor: Colors.transparent,
+          // splashColor: Colors.transparent,
           onTap: () => onPress(),
           child: Padding(
             padding: EdgeInsets.fromLTRB(20, 8, 20, 8),

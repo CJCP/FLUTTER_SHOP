@@ -4,20 +4,16 @@ import 'package:shop/redux/actions.dart';
 import 'package:shop/redux/models.dart';
 import 'package:shop/redux/store.dart';
 import 'package:shop/ui/cart_badge.dart';
+import 'package:shop/ui/drawer.dart';
 
 class CartContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SDrawer(),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
-          onPressed: () => print('menu'),
-        ),
         centerTitle: true,
         actions: <Widget>[
           CartBadge(
