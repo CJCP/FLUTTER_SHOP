@@ -279,15 +279,8 @@ class ClotheDetailsState extends State<ClotheDetails> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 50,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(23, 44, 80, 1),
-          ),
-          child: Center(child: addToShop(widget.clothe, _size, _quantity)),
-        ),
-      ),
+      bottomNavigationBar:
+          BottomAppBar(child: addToShop(widget.clothe, _size, _quantity)),
     );
   }
 
@@ -295,14 +288,21 @@ class ClotheDetailsState extends State<ClotheDetails> {
     return StoreConnector<AppState, AddItemActionFunction>(
       converter: (store) => (item) => store.dispatch(AddItemAction(item)),
       builder: (context, callback) => InkWell(
-            splashColor: Colors.transparent,
             onTap: () {
               callback(CartItem(
                   clothe.title, size, quantity, clothe.price, clothe.image));
             },
-            child: Text(
-              'ADD TO CART',
-              style: TextStyle(color: Colors.white, fontSize: 15),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(23, 44, 80, 1),
+              ),
+              child: Center(
+                child: Text(
+                  'ADD TO CART',
+                  style: TextStyle(color: Colors.white, fontSize: 15),
+                ),
+              ),
             ),
           ),
     );
